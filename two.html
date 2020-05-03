@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Resolvelib Visualization</title>
+
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <script src="https://unpkg.com/@hpcc-js/wasm@0.3.6/dist/index.min.js"></script>
+  <script src="https://unpkg.com/d3-graphviz@3.0.0/build/d3-graphviz.js"></script>
+
+  <script>
+    var currentIndex = 0;
+    var dots = ["strict digraph \"\" {\n\tgraph [labeljust=center,\n\t\tlabelloc=top,\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\tedge [arrowhead=empty,\n\t\tcolor=\"#808080\",\n\t\tstyle=dashed\n\t];\n\tsubgraph cluster_first {\n\t\tgraph [label=first];\n\t\treq_0\t[label=\"*\",\n\t\t\tshape=cds];\n\t}\n\troot\t[label=\":root:\",\n\t\tshape=Mdiamond];\n\troot -> req_0;\n}\n", "strict digraph \"\" {\n\tgraph [labeljust=center,\n\t\tlabelloc=top,\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\tedge [arrowhead=empty,\n\t\tcolor=\"#808080\",\n\t\tstyle=dashed\n\t];\n\tsubgraph cluster_first {\n\t\tgraph [label=first];\n\t\treq_0\t[label=\"*\",\n\t\t\tshape=cds];\n\t\tcan_1\t[color=\"#80CC80\",\n\t\t\tlabel=\"3.0.0\",\n\t\t\tshape=box];\n\t}\n\tsubgraph cluster_second {\n\t\tgraph [label=second];\n\t\treq_2\t[color=\"#80C080\",\n\t\t\tlabel=\"==3.0.0\",\n\t\t\tshape=cds];\n\t}\n\tsubgraph cluster_third {\n\t\tgraph [label=third];\n\t\treq_3\t[color=\"#80C080\",\n\t\t\tlabel=\"==2.0.0\",\n\t\t\tshape=cds];\n\t}\n\troot\t[label=\":root:\",\n\t\tshape=Mdiamond];\n\troot -> req_0;\n\treq_0 -> can_1\t[color=\"#80CC80\"];\n\tcan_1 -> req_2\t[arrowhead=vee,\n\t\tcolor=\"#80CC80\",\n\t\tstyle=solid];\n\tcan_1 -> req_3\t[arrowhead=vee,\n\t\tcolor=\"#80CC80\",\n\t\tstyle=solid];\n}\n", "strict digraph \"\" {\n\tgraph [labeljust=center,\n\t\tlabelloc=top,\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\tedge [arrowhead=empty,\n\t\tcolor=\"#808080\",\n\t\tstyle=dashed\n\t];\n\tsubgraph cluster_first {\n\t\tgraph [label=first];\n\t\treq_0\t[label=\"*\",\n\t\t\tshape=cds];\n\t\tcan_1\t[color=red,\n\t\t\tlabel=\"3.0.0\",\n\t\t\tshape=signature];\n\t}\n\tsubgraph cluster_second {\n\t\tgraph [label=second];\n\t\treq_2\t[color=black,\n\t\t\tlabel=\"==3.0.0\",\n\t\t\tshape=cds];\n\t\tcan_4\t[color=red,\n\t\t\tlabel=\"3.0.0\",\n\t\t\tshape=signature];\n\t}\n\tsubgraph cluster_third {\n\t\tgraph [label=third];\n\t\treq_3\t[color=black,\n\t\t\tlabel=\"==2.0.0\",\n\t\t\tshape=cds];\n\t\treq_5\t[color=black,\n\t\t\tlabel=\"==3.0.0\",\n\t\t\tshape=cds];\n\t}\n\troot\t[label=\":root:\",\n\t\tshape=Mdiamond];\n\troot -> req_0;\n\treq_0 -> can_1\t[color=\"#80CC80\"];\n\tcan_1 -> req_2\t[arrowhead=vee,\n\t\tcolor=\"#FF9999\"];\n\tcan_1 -> req_3\t[arrowhead=vee,\n\t\tcolor=\"#FF9999\"];\n\treq_2 -> can_4\t[color=\"#80CC80\"];\n\tcan_4 -> req_5\t[arrowhead=vee,\n\t\tcolor=\"#FF9999\"];\n}\n", "strict digraph \"\" {\n\tgraph [labeljust=center,\n\t\tlabelloc=top,\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\tedge [arrowhead=empty,\n\t\tcolor=\"#808080\",\n\t\tstyle=dashed\n\t];\n\tsubgraph cluster_first {\n\t\tgraph [label=first];\n\t\treq_0\t[label=\"*\",\n\t\t\tshape=cds];\n\t\tcan_1\t[color=red,\n\t\t\tlabel=\"3.0.0\",\n\t\t\tshape=signature];\n\t\tcan_6\t[color=\"#80CC80\",\n\t\t\tlabel=\"2.0.0\",\n\t\t\tshape=box];\n\t}\n\tsubgraph cluster_second {\n\t\tgraph [label=second];\n\t\treq_2\t[color=black,\n\t\t\tlabel=\"==3.0.0\",\n\t\t\tshape=cds];\n\t\tcan_4\t[color=red,\n\t\t\tlabel=\"3.0.0\",\n\t\t\tshape=signature];\n\t\treq_7\t[color=\"#80C080\",\n\t\t\tlabel=\"==2.0.0\",\n\t\t\tshape=cds];\n\t}\n\tsubgraph cluster_third {\n\t\tgraph [label=third];\n\t\treq_3\t[color=black,\n\t\t\tlabel=\"==2.0.0\",\n\t\t\tshape=cds];\n\t\treq_5\t[color=black,\n\t\t\tlabel=\"==3.0.0\",\n\t\t\tshape=cds];\n\t\treq_8\t[color=\"#80C080\",\n\t\t\tlabel=\"==1.0.0\",\n\t\t\tshape=cds];\n\t}\n\troot\t[label=\":root:\",\n\t\tshape=Mdiamond];\n\troot -> req_0;\n\treq_0 -> can_1\t[color=\"#80CC80\"];\n\treq_0 -> can_6\t[color=\"#80CC80\"];\n\tcan_1 -> req_2\t[arrowhead=vee,\n\t\tcolor=\"#FF9999\"];\n\tcan_1 -> req_3\t[arrowhead=vee,\n\t\tcolor=\"#FF9999\"];\n\treq_2 -> can_4\t[color=\"#80CC80\"];\n\tcan_4 -> req_5\t[arrowhead=vee,\n\t\tcolor=\"#FF9999\"];\n\tcan_6 -> req_7\t[arrowhead=vee,\n\t\tcolor=\"#80CC80\",\n\t\tstyle=solid];\n\tcan_6 -> req_8\t[arrowhead=vee,\n\t\tcolor=\"#80CC80\",\n\t\tstyle=solid];\n}\n", "strict digraph \"\" {\n\tgraph [labeljust=center,\n\t\tlabelloc=top,\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\tedge [arrowhead=empty,\n\t\tcolor=\"#808080\",\n\t\tstyle=dashed\n\t];\n\tsubgraph cluster_first {\n\t\tgraph [label=first];\n\t\treq_0\t[label=\"*\",\n\t\t\tshape=cds];\n\t\tcan_1\t[color=red,\n\t\t\tlabel=\"3.0.0\",\n\t\t\tshape=signature];\n\t\tcan_6\t[color=red,\n\t\t\tlabel=\"2.0.0\",\n\t\t\tshape=signature];\n\t}\n\tsubgraph cluster_second {\n\t\tgraph [label=second];\n\t\treq_2\t[color=black,\n\t\t\tlabel=\"==3.0.0\",\n\t\t\tshape=cds];\n\t\tcan_4\t[color=red,\n\t\t\tlabel=\"3.0.0\",\n\t\t\tshape=signature];\n\t\treq_7\t[color=black,\n\t\t\tlabel=\"==2.0.0\",\n\t\t\tshape=cds];\n\t\tcan_9\t[color=red,\n\t\t\tlabel=\"2.0.0\",\n\t\t\tshape=signature];\n\t}\n\tsubgraph cluster_third {\n\t\tgraph [label=third];\n\t\treq_3\t[color=black,\n\t\t\tlabel=\"==2.0.0\",\n\t\t\tshape=cds];\n\t\treq_5\t[color=black,\n\t\t\tlabel=\"==3.0.0\",\n\t\t\tshape=cds];\n\t\treq_8\t[color=black,\n\t\t\tlabel=\"==1.0.0\",\n\t\t\tshape=cds];\n\t}\n\troot\t[label=\":root:\",\n\t\tshape=Mdiamond];\n\troot -> req_0;\n\treq_0 -> can_1\t[color=\"#80CC80\"];\n\treq_0 -> can_6\t[color=\"#80CC80\"];\n\tcan_1 -> req_2\t[arrowhead=vee,\n\t\tcolor=\"#FF9999\"];\n\tcan_1 -> req_3\t[arrowhead=vee,\n\t\tcolor=\"#FF9999\"];\n\treq_2 -> can_4\t[color=\"#80CC80\"];\n\tcan_4 -> req_5\t[arrowhead=vee,\n\t\tcolor=\"#FF9999\"];\n\tcan_6 -> req_7\t[arrowhead=vee,\n\t\tcolor=\"#FF9999\"];\n\tcan_6 -> req_8\t[arrowhead=vee,\n\t\tcolor=\"#FF9999\"];\n\treq_7 -> can_9\t[color=\"#80CC80\"];\n\tcan_9 -> req_3\t[arrowhead=vee,\n\t\tcolor=\"#FF9999\"];\n}\n", "strict digraph \"\" {\n\tgraph [labeljust=center,\n\t\tlabelloc=top,\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\tedge [arrowhead=empty,\n\t\tcolor=\"#808080\",\n\t\tstyle=dashed\n\t];\n\tsubgraph cluster_first {\n\t\tgraph [label=first];\n\t\treq_0\t[label=\"*\",\n\t\t\tshape=cds];\n\t\tcan_1\t[color=red,\n\t\t\tlabel=\"3.0.0\",\n\t\t\tshape=signature];\n\t\tcan_6\t[color=red,\n\t\t\tlabel=\"2.0.0\",\n\t\t\tshape=signature];\n\t\tcan_10\t[color=\"#80CC80\",\n\t\t\tlabel=\"1.0.0\",\n\t\t\tshape=box];\n\t}\n\tsubgraph cluster_second {\n\t\tgraph [label=second];\n\t\treq_2\t[color=black,\n\t\t\tlabel=\"==3.0.0\",\n\t\t\tshape=cds];\n\t\tcan_4\t[color=red,\n\t\t\tlabel=\"3.0.0\",\n\t\t\tshape=signature];\n\t\treq_7\t[color=black,\n\t\t\tlabel=\"==2.0.0\",\n\t\t\tshape=cds];\n\t\tcan_9\t[color=red,\n\t\t\tlabel=\"2.0.0\",\n\t\t\tshape=signature];\n\t\treq_11\t[color=\"#80C080\",\n\t\t\tlabel=\"==1.0.0\",\n\t\t\tshape=cds];\n\t}\n\tsubgraph cluster_third {\n\t\tgraph [label=third];\n\t\treq_3\t[color=black,\n\t\t\tlabel=\"==2.0.0\",\n\t\t\tshape=cds];\n\t\treq_5\t[color=black,\n\t\t\tlabel=\"==3.0.0\",\n\t\t\tshape=cds];\n\t\treq_8\t[color=black,\n\t\t\tlabel=\"==1.0.0\",\n\t\t\tshape=cds];\n\t}\n\troot\t[label=\":root:\",\n\t\tshape=Mdiamond];\n\troot -> req_0;\n\treq_0 -> can_1\t[color=\"#80CC80\"];\n\treq_0 -> can_6\t[color=\"#80CC80\"];\n\treq_0 -> can_10\t[color=\"#80CC80\"];\n\tcan_1 -> req_2\t[arrowhead=vee,\n\t\tcolor=\"#FF9999\"];\n\tcan_1 -> req_3\t[arrowhead=vee,\n\t\tcolor=\"#FF9999\"];\n\treq_2 -> can_4\t[color=\"#80CC80\"];\n\tcan_4 -> req_5\t[arrowhead=vee,\n\t\tcolor=\"#FF9999\"];\n\tcan_6 -> req_7\t[arrowhead=vee,\n\t\tcolor=\"#FF9999\"];\n\tcan_6 -> req_8\t[arrowhead=vee,\n\t\tcolor=\"#FF9999\"];\n\treq_7 -> can_9\t[color=\"#80CC80\"];\n\tcan_9 -> req_3\t[arrowhead=vee,\n\t\tcolor=\"#FF9999\"];\n\tcan_10 -> req_11\t[arrowhead=vee,\n\t\tcolor=\"#80CC80\",\n\t\tstyle=solid];\n}\n", "strict digraph \"\" {\n\tgraph [labeljust=center,\n\t\tlabelloc=top,\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\tedge [arrowhead=empty,\n\t\tcolor=\"#808080\",\n\t\tstyle=dashed\n\t];\n\tsubgraph cluster_first {\n\t\tgraph [label=first];\n\t\treq_0\t[label=\"*\",\n\t\t\tshape=cds];\n\t\tcan_1\t[color=red,\n\t\t\tlabel=\"3.0.0\",\n\t\t\tshape=signature];\n\t\tcan_6\t[color=red,\n\t\t\tlabel=\"2.0.0\",\n\t\t\tshape=signature];\n\t\tcan_10\t[color=\"#80CC80\",\n\t\t\tlabel=\"1.0.0\",\n\t\t\tshape=box];\n\t}\n\tsubgraph cluster_second {\n\t\tgraph [label=second];\n\t\treq_2\t[color=black,\n\t\t\tlabel=\"==3.0.0\",\n\t\t\tshape=cds];\n\t\tcan_4\t[color=red,\n\t\t\tlabel=\"3.0.0\",\n\t\t\tshape=signature];\n\t\treq_7\t[color=black,\n\t\t\tlabel=\"==2.0.0\",\n\t\t\tshape=cds];\n\t\tcan_9\t[color=red,\n\t\t\tlabel=\"2.0.0\",\n\t\t\tshape=signature];\n\t\treq_11\t[color=\"#80C080\",\n\t\t\tlabel=\"==1.0.0\",\n\t\t\tshape=cds];\n\t\tcan_12\t[color=\"#80CC80\",\n\t\t\tlabel=\"1.0.0\",\n\t\t\tshape=box];\n\t}\n\tsubgraph cluster_third {\n\t\tgraph [label=third];\n\t\treq_3\t[color=black,\n\t\t\tlabel=\"==2.0.0\",\n\t\t\tshape=cds];\n\t\treq_5\t[color=black,\n\t\t\tlabel=\"==3.0.0\",\n\t\t\tshape=cds];\n\t\treq_8\t[color=\"#80C080\",\n\t\t\tlabel=\"==1.0.0\",\n\t\t\tshape=cds];\n\t}\n\troot\t[label=\":root:\",\n\t\tshape=Mdiamond];\n\troot -> req_0;\n\treq_0 -> can_1\t[color=\"#80CC80\"];\n\treq_0 -> can_6\t[color=\"#80CC80\"];\n\treq_0 -> can_10\t[color=\"#80CC80\"];\n\tcan_1 -> req_2\t[arrowhead=vee,\n\t\tcolor=\"#FF9999\"];\n\tcan_1 -> req_3\t[arrowhead=vee,\n\t\tcolor=\"#FF9999\"];\n\treq_2 -> can_4\t[color=\"#80CC80\"];\n\tcan_4 -> req_5\t[arrowhead=vee,\n\t\tcolor=\"#FF9999\"];\n\tcan_6 -> req_7\t[arrowhead=vee,\n\t\tcolor=\"#FF9999\"];\n\tcan_6 -> req_8\t[arrowhead=vee,\n\t\tcolor=\"#FF9999\"];\n\treq_7 -> can_9\t[color=\"#80CC80\"];\n\tcan_9 -> req_3\t[arrowhead=vee,\n\t\tcolor=\"#FF9999\"];\n\tcan_10 -> req_11\t[arrowhead=vee,\n\t\tcolor=\"#80CC80\",\n\t\tstyle=solid];\n\treq_11 -> can_12\t[color=\"#80CC80\"];\n\tcan_12 -> req_8\t[arrowhead=vee,\n\t\tcolor=\"#80CC80\",\n\t\tstyle=solid];\n}\n", "strict digraph \"\" {\n\tgraph [labeljust=center,\n\t\tlabelloc=top,\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\tedge [arrowhead=empty,\n\t\tcolor=\"#808080\",\n\t\tstyle=dashed\n\t];\n\tsubgraph cluster_first {\n\t\tgraph [label=first];\n\t\treq_0\t[label=\"*\",\n\t\t\tshape=cds];\n\t\tcan_1\t[color=red,\n\t\t\tlabel=\"3.0.0\",\n\t\t\tshape=signature];\n\t\tcan_6\t[color=red,\n\t\t\tlabel=\"2.0.0\",\n\t\t\tshape=signature];\n\t\tcan_10\t[color=\"#80CC80\",\n\t\t\tlabel=\"1.0.0\",\n\t\t\tshape=box];\n\t}\n\tsubgraph cluster_second {\n\t\tgraph [label=second];\n\t\treq_2\t[color=black,\n\t\t\tlabel=\"==3.0.0\",\n\t\t\tshape=cds];\n\t\tcan_4\t[color=red,\n\t\t\tlabel=\"3.0.0\",\n\t\t\tshape=signature];\n\t\treq_7\t[color=black,\n\t\t\tlabel=\"==2.0.0\",\n\t\t\tshape=cds];\n\t\tcan_9\t[color=red,\n\t\t\tlabel=\"2.0.0\",\n\t\t\tshape=signature];\n\t\treq_11\t[color=\"#80C080\",\n\t\t\tlabel=\"==1.0.0\",\n\t\t\tshape=cds];\n\t\tcan_12\t[color=\"#80CC80\",\n\t\t\tlabel=\"1.0.0\",\n\t\t\tshape=box];\n\t}\n\tsubgraph cluster_third {\n\t\tgraph [label=third];\n\t\treq_3\t[color=black,\n\t\t\tlabel=\"==2.0.0\",\n\t\t\tshape=cds];\n\t\treq_5\t[color=black,\n\t\t\tlabel=\"==3.0.0\",\n\t\t\tshape=cds];\n\t\treq_8\t[color=\"#80C080\",\n\t\t\tlabel=\"==1.0.0\",\n\t\t\tshape=cds];\n\t\tcan_13\t[color=\"#80CC80\",\n\t\t\tlabel=\"1.0.0\",\n\t\t\tshape=box];\n\t}\n\troot\t[label=\":root:\",\n\t\tshape=Mdiamond];\n\troot -> req_0;\n\treq_0 -> can_1\t[color=\"#80CC80\"];\n\treq_0 -> can_6\t[color=\"#80CC80\"];\n\treq_0 -> can_10\t[color=\"#80CC80\"];\n\tcan_1 -> req_2\t[arrowhead=vee,\n\t\tcolor=\"#FF9999\"];\n\tcan_1 -> req_3\t[arrowhead=vee,\n\t\tcolor=\"#FF9999\"];\n\treq_2 -> can_4\t[color=\"#80CC80\"];\n\tcan_4 -> req_5\t[arrowhead=vee,\n\t\tcolor=\"#FF9999\"];\n\tcan_6 -> req_7\t[arrowhead=vee,\n\t\tcolor=\"#FF9999\"];\n\tcan_6 -> req_8\t[arrowhead=vee,\n\t\tcolor=\"#FF9999\"];\n\treq_7 -> can_9\t[color=\"#80CC80\"];\n\treq_8 -> can_13\t[color=\"#80CC80\"];\n\tcan_9 -> req_3\t[arrowhead=vee,\n\t\tcolor=\"#FF9999\"];\n\tcan_10 -> req_11\t[arrowhead=vee,\n\t\tcolor=\"#80CC80\",\n\t\tstyle=solid];\n\treq_11 -> can_12\t[color=\"#80CC80\"];\n\tcan_12 -> req_8\t[arrowhead=vee,\n\t\tcolor=\"#80CC80\",\n\t\tstyle=solid];\n}\n"];
+    var playing = true;
+    var slider = null;
+    var roundElem = null;
+
+    function range(size) {
+      return [...Array(size).keys()];
+    }
+
+    function renderRound(value) {
+      if (value === undefined) {
+        value = currentIndex;
+      } else {
+        currentIndex = value;
+      }
+      // Get the element
+      var dot = dots[value];
+
+      // Update controls
+      document.getElementById("round-number").innerHTML = value;
+
+      // Update graph
+      return window.graph.renderDot(dot);
+    }
+
+    function play() {
+      slider.value = currentIndex;
+      renderRound()
+        .on("end", function () {
+          if (playing) {  // allow for pausing
+            currentIndex = (currentIndex + 1) % dots.length;
+            play();
+          }
+        });
+    }
+
+    function goToRound() {
+      playing = false;
+      var value = Number(slider.value);
+
+      renderRound(value);
+    }
+
+    function setupControls() {
+      slider = document.getElementById("slider");
+
+      slider.setAttribute("max", dots.length - 1);
+
+      // From https://stackoverflow.com/a/37623959/1931274
+      function onRangeChange(r, f) {
+        var n, c, m;
+        r.addEventListener("input", function (e) {
+          n = 1;
+          c = e.target.value;
+          if (c != m) { f(e); }
+          m = c;
+        });
+        r.addEventListener("change", function (e) {
+          if (!n) {
+            f(e);
+          }
+        });
+      }
+
+      onRangeChange(slider, goToRound);
+    }
+
+    function prepareGraph() {
+      window.graph = d3.select("#graph").graphviz();
+      window.graph
+        .zoom(false)
+        .transition(function () {
+          return d3.transition("main")
+            .ease(d3.easeExpOut)
+            .duration(750);
+        })
+        .on("initEnd", play);
+    }
+
+    function main() {
+      setupControls();
+      prepareGraph();
+    }
+
+    document.addEventListener("DOMContentLoaded", main);
+  </script>
+  <style>
+    html,
+    body {
+      height: 100%;
+    }
+
+    body {
+      margin: 0;
+      padding: 0 25px;
+
+      color: #424949;
+      background-color: #ECF0F1;
+
+      font-family: sans-serif;
+      font-weight: 500;
+
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .graph-container {
+      height: 100%;
+      width: 100%;
+      margin-bottom: 25px;
+      border-radius: 1em;
+
+      text-align: center;
+
+      background-color: white;
+      overflow: auto;
+    }
+
+    #controls {
+      width: 80vw;
+      margin: auto;
+    }
+
+    #slider {
+      width: 100%;
+    }
+
+    h2 {
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <h2>Round <span id="round-number">0</span></h2>
+  <div id="controls">
+    <input id="slider" type="range" min="0" max="0" value="0">
+  </div>
+  <div class="graph-container">
+    <div id="graph"></div>
+  </div>
+</body>
+
+</html>
