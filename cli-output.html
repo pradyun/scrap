@@ -1,415 +1,121 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>CLI Output Visualization</title>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>CLI Output Visualization</title>
 
-  <script>
-var code = null;
-var stateInfo = null;
-var contents = [];
+    <link rel="stylesheet" href="terminal.css">
+    <link rel="stylesheet" href="states.css">
+    <script src="states.js"></script>
 
-var state = {
-  index: 0,
-  playing: false,
-}
-var controls = {
-  index: null,
-  buttons: {
-    next: null,
-    prev: null,
-    toggle: null,
-  },
-  slider: null,
-}
+    <script>
+      var terminalText = null;
+      var userInput = null;
 
-/////////////
-// Helpers //
-/////////////
-// From https://stackoverflow.com/a/37623959/1931274
-function onRangeChange(r, f) {
-  var n, c, m;
-  r.addEventListener("input", function (e) {
-    n = 1; c = e.target.value; if (c != m) { f(e); }; m = c;
-  });
-  r.addEventListener("change", function (e) { if (!n) { f(e); }});
-}
+      function prepare() {
+        // Load the state.contents.
+        terminalText = document.getElementById("terminal-text");
+        userInput = document.getElementById("user-input");
+        state.contents = userInput.value.split("\n+++\n");
 
-//////////////
-// UI Logic //
-//////////////
-function setupControls() {
-  controls.index = document.getElementById("index");
+        // Clean up newlines.
+        for (let index = 0; index < state.contents.length; index++) {
+          state.contents[index] = state.contents[index].replace(/^\s+|\s+$/g, '');
+        }
 
-  controls.buttons.next = document.getElementById("next");
-  controls.buttons.next.onclick = showNext;
+        // Debugging!
+        console.log(state.contents);
+      }
 
-  controls.buttons.prev = document.getElementById("prev");
-  controls.buttons.prev.onclick = showPrevious;
+      function showThisState() {
+        updateControls();
 
-  controls.buttons.toggle = document.getElementById("toggle");
-  controls.buttons.toggle.onclick = toggle;
+        terminalText.innerHTML = state.contents[state.index];
+        setTimeout(continueIfPlaying, 250);
+      }
+    </script>
 
-  controls.slider = document.getElementById("slider");
-  controls.slider.setAttribute("max", contents.length - 1);
-  onRangeChange(controls.slider, showSliderState);
+    <style>
+      html, body {
+        height: 100%;
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        line-height: 1.3;
 
-}
+        background: #555555;
+        color: white;
 
-function updateControls() {
-  controls.slider.value = state.index;
-  controls.index.innerHTML = state.index;
+        margin: 0 1rem;
 
-  if (state.playing) {
-    controls.buttons.toggle.innerHTML = "Pause";
-  } else {
-    controls.buttons.toggle.innerHTML = "Play";
-  }
-}
+        display: flex;
+        flex-direction: column;
+      }
+      /* Layouting */
+      .showcase {
+        margin-bottom: 1rem;
 
-//////////////////
-// UI callbacks //
-//////////////////
-function toggle() {
-  console.log("toggle");
-  state.playing = !state.playing;
-  showThisState();
-}
+        flex: 1;
+        display: flex;
+        position: relative;
+      }
+      .terminal, .user-input-container {
+        padding: 0 0.5rem;
+        box-sizing: border-box;
 
-function showNext() {
-  console.log("next");
-  state.playing = false;
-  if (state.index < contents.length - 1) {
-    state.index = state.index + 1;
-  }
-  showThisState();
-}
+        width: 100%;
 
-function showPrevious() {
-  console.log("previous");
-  state.playing = false;
-  if (state.index != 0) {
-    state.index = state.index - 1;
-  }
-  showThisState();
-}
+        flex-basis: 50%;
+        flex-shrink: 0;
+        flex-grow: 0;
+      }
 
-function showSliderState() {
-  console.log("slider");
-  var value = Number(controls.slider.value);
-  state.index = value;
-  state.playing = false;
+      .user-input-container {
+        display: flex;
+        flex-direction: column;
+      }
+      .user-hint {
+        text-align: center;
+      }
+      #user-input {
+        box-sizing: border-box;
+        width: 100%;
+        height: 100%;
 
-  showThisState();
-}
+        padding: 0.5rem;
 
-///////////////
-// Rendering //
-///////////////
-function prepareState() {
-  // Load the contents.
-  code = document.getElementById("code");
-  stateInfo = document.getElementById("state-info");
-  contents = stateInfo.value.split("\n+++\n");
+        resize: none;
+        outline: none;
 
-  // Clean up newlines.
-  for (let index = 0; index < contents.length; index++) {
-    contents[index] = contents[index].replace(/^\s+|\s+$/g, '');
-  }
+        white-space: pre-wrap;
 
-  // Debugging!
-  console.log(contents);
-}
+        border: 1px solid #ddd;
+        border-radius: 0.2rem;
+      }
+    </style>
 
-function showThisState() {
-  updateControls();
+  </head>
 
-  code.innerHTML = contents[state.index];
-  setTimeout(continueIfPlaying, 250);
-}
-
-
-function continueIfPlaying() {
-  if (!state.playing) {
-    return
-  }
-  state.index = (state.index + 1) % contents.length;
-  if (state.index == contents.length - 1) {
-    state.playing = false;
-  }
-  showThisState();
-}
-
-/////////////////
-// Entry Point //
-/////////////////
-function main() {
-  console.log("main");
-  prepareState();
-  setupControls();
-
-  state.index = 0;
-  state.playing = false;
-  showThisState();
-}
-
-document.addEventListener("DOMContentLoaded", main);
-  </script>
-  <style>
-    /* Scaffolding */
-html, body {
-  height: 100%;
-}
-
-body {
-  margin: 0;
-  padding: 0 25px;
-  color: #424949;
-  background-color: #ECF0F1;
-
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  font-family: -apple-system, BlinkMacSystemFont, avenir next, avenir, helvetica neue, helvetica, Ubuntu, roboto, noto, segoe ui, arial, sans-serif;
-
-  display: flex;
-  flex-direction: column;
-}
-
-.showcase {
-  margin-bottom: 25px;
-  overflow: auto;
-
-  flex: 1;
-
-  display: flex;
-  justify-content: space-between;
-  position: relative;
-}
-
-#code, #state-info {
-  font-size: 0.75rem;
-  font-family: Menlo, Consolas, Monaco, Liberation Mono, Lucida Console, monospace;
-  line-height: 1.3;
-
-  width: 100%;
-  margin: 0 0.5rem;
-  padding: 0.5rem;
-
-  white-space: pre-wrap;
-
-  border-radius: 0.5em;
-  border: 1px solid #eeeeee;
-  background-color: white;
-
-  resize: none;
-  outline: none;
-}
-
-/* State */
-.state-container h2 {
-  text-align: center;
-}
-
-/* General Buttons */
-button {
-  position: relative;
-
-  width: 100px;
-  height: 40px;
-
-  color: #fbfbfb;
-  background: linear-gradient(to bottom, #4eb5e5 0%,#389ed5 100%); /* W3C */
-
-  border: none;
-  border-bottom: 4px solid #2b8bc6;
-  border-radius: 5px;
-
-  margin: 0 5px;
-
-  box-shadow: 0px 3px 0px 0px rgba(0,0,0,.2);
-  text-shadow: 0 0 1px rgba(0,0,0,.4);
-
-  font-size: 15px;
-
-  text-align: center;
-  text-indent: 0;
-
-  cursor: pointer;
-}
-
-button:active {
-  top: 1px;
-  box-shadow: 0px 2px 0px 0px rgba(0,0,0,.2);
-}
-
-/* Button pointing left */
-button.prev {
-  text-align: right;
-  text-indent: 5px;
-
-  padding-right: 12px;
-  box-sizing: border-box;
-}
-button.prev:after {
-  content: "";
-  width: 0;
-  height: 0;
-  display: block;
-  position: absolute;
-  left: 0;
-  top: 0;
-
-  opacity: 0.6;
-  border-top: 20px solid #187dbc;
-  border-bottom: 20px solid #187dbc;
-  border-right: 16px solid transparent;
-  border-left: 20px solid #187dbc;
-
-  border-radius: 5px 0 0 5px;
-}
-
-/* Next button */
-button.next {
-  text-align: left;
-  text-indent: 5px;
-}
-
-button.next:after {
-  content: "";
-  width: 0;
-  height: 0;
-  display: block;
-  border-top: 20px solid #187dbc;
-  border-bottom: 20px solid #187dbc;
-  border-left: 16px solid transparent;
-  border-right: 20px solid #187dbc;
-  position: absolute;
-  opacity: 0.6;
-  right: 0;
-  top: 0;
-  border-radius: 0 5px 5px 0;
-}
-
-.controls-container {
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: center;
-}
-
-.slider-container {
-  text-align: center;
-  width: 75%;
-  margin: 1em auto;
-}
-
-/* Slider Styling, thanks range.css! */
-#slider {
-  -webkit-appearance: none;
-  width: 100%;
-  margin: 6.5px 0;
-  background: inherit;
-}
-#slider:focus {
-  outline: none;
-}
-#slider::-webkit-slider-runnable-track {
-  width: 100%;
-  height: 3px;
-  cursor: pointer;
-  box-shadow: 0px 0px 1px #000000, 0px 0px 0px #0d0d0d;
-  background: #4eb5e5;
-  border-radius: 1.6px;
-  border: 0px solid #010101;
-}
-#slider::-webkit-slider-thumb {
-  box-shadow: 0px 0px 3px rgba(43, 139, 198, 0.49), 0px 0px 0px rgba(55, 152, 212, 0.49);
-  border: 1px solid #2b8bc6;
-  height: 16px;
-  width: 20px;
-  border-radius: 16px;
-  background: rgba(24, 125, 188, 0.93);
-  cursor: pointer;
-  -webkit-appearance: none;
-  margin-top: -6.5px;
-}
-#slider:focus::-webkit-slider-runnable-track {
-  background: #64bee8;
-}
-#slider::-moz-range-track {
-  width: 100%;
-  height: 3px;
-  cursor: pointer;
-  box-shadow: 0px 0px 1px #000000, 0px 0px 0px #0d0d0d;
-  background: #4eb5e5;
-  border-radius: 1.6px;
-  border: 0px solid #010101;
-}
-#slider::-moz-range-thumb {
-  box-shadow: 0px 0px 3px rgba(43, 139, 198, 0.49), 0px 0px 0px rgba(55, 152, 212, 0.49);
-  border: 1px solid #2b8bc6;
-  height: 16px;
-  width: 20px;
-  border-radius: 16px;
-  background: rgba(24, 125, 188, 0.93);
-  cursor: pointer;
-}
-#slider::-ms-track {
-  width: 100%;
-  height: 3px;
-  cursor: pointer;
-  background: transparent;
-  border-color: transparent;
-  color: transparent;
-}
-#slider::-ms-fill-lower {
-  background: #38ace2;
-  border: 0px solid #010101;
-  border-radius: 3.2px;
-  box-shadow: 0px 0px 1px #000000, 0px 0px 0px #0d0d0d;
-}
-#slider::-ms-fill-upper {
-  background: #4eb5e5;
-  border: 0px solid #010101;
-  border-radius: 3.2px;
-  box-shadow: 0px 0px 1px #000000, 0px 0px 0px #0d0d0d;
-}
-#slider::-ms-thumb {
-  box-shadow: 0px 0px 3px rgba(43, 139, 198, 0.49), 0px 0px 0px rgba(55, 152, 212, 0.49);
-  border: 1px solid #2b8bc6;
-  height: 16px;
-  width: 20px;
-  border-radius: 16px;
-  background: rgba(24, 125, 188, 0.93);
-  cursor: pointer;
-  height: 3px;
-}
-#slider:focus::-ms-fill-lower {
-  background: #4eb5e5;
-}
-#slider:focus::-ms-fill-upper {
-  background: #64bee8;
-}
-  </style>
-
-</head>
-
-<body>
-  <div class="state-container">
-    <h2>State <span id="index">0</span></h2>
-    <div class="controls-container">
-      <button id="prev" class="prev">Prev</button>
-      <button id="toggle" class="toggle">...</button>
-      <button id="next" class="next">Next</button>
+  <body>
+    <div class="state-container">
+      <h2>State <span id="index">0</span></h2>
+      <div class="controls-container">
+        <button id="prev" class="prev">Prev</button>
+        <button id="toggle" class="toggle">...</button>
+        <button id="next" class="next">Next</button>
+      </div>
+      <div class="slider-container">
+        <input id="slider" class="slider" type="range" min="0" max="0" value="0">
+      </div>
     </div>
-    <div class="slider-container">
-      <input id="slider" type="range" min="0" max="0" value="0">
-    </div>
-  </div>
-  <div class="showcase">
-    <textarea name="state-info" id="state-info" cols="80" rows="24" autofocus onchange="main()">
+
+    <div class="showcase">
+      <div class="user-input-container">
+        <div class="user-hint">Type the states to show below (separated by "+++")</div>
+      <textarea name="user-input" id="user-input" cols="80" rows="24" autofocus onchange="main()">
 Initial state.
 +++
 State 1
@@ -422,10 +128,22 @@ State 4
 +++
 State 5
 +++
-Final state.
-    </textarea>
-    <pre id="code"></pre>
+Final state.</textarea>
+
+      </div>
+
+<div class="terminal">
+  <div class="terminal-head">
+    <div class="terminal-button terminal-button--one"></div>
+    <div class="terminal-button terminal-button--two"></div>
+    <div class="terminal-button terminal-button--three"></div>
   </div>
-</body>
+  <pre id="terminal-text" class="terminal-text">$ echo "This is cool"
+This is cool</pre>
+</div>
+
+    </div>
+
+  </body>
 
 </html>
