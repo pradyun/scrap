@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Factorio Graph thingie</title>
+
+    <script src="https://js.cytoscape.org/js/cytoscape.min.js"></script>
+
+    <script src="https://unpkg.com/layout-base/layout-base.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/elkjs@0.3.0/lib/elk.bundled.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.10/lodash.min.js"></script>
+    <script src="https://unpkg.com/avsdf-base/avsdf-base.js"></script>
+    <script src="https://unpkg.com/weaverjs@1.2.0/dist/weaver.min.js"></script>
+    <script src="https://unpkg.com/cose-base/cose-base.js"></script>
+    <script src="https://unpkg.com/dagre/dist/dagre.js"></script>
+    <script src="https://unpkg.com/klayjs@0.4.1/klay.js"></script>
+    <script src="https://unpkg.com/webcola/WebCola/cola.min.js"></script>
+    <script src="https://unpkg.com/cytoscape-layout-utilities/cytoscape-layout-utilities.js"></script>
+    <script src="https://unpkg.com/cytoscape-graphml/cytoscape-graphml.js"></script>
+    <script src="https://raw.githack.com/iVis-at-Bilkent/cytoscape.js-layvo/unstable/cytoscape-layvo.js"></script>
+
+    <script src="https://ivis-at-bilkent.github.io/cytoscape.js-avsdf/cytoscape-avsdf.js"></script>
+    <script src="https://unpkg.com/cytoscape-cose-bilkent/cytoscape-cose-bilkent.js"></script>
+    <script src="https://unpkg.com/cytoscape-dagre/cytoscape-dagre.js"></script>
+    <script src="https://unpkg.com/cytoscape-elk/cytoscape-elk.js"></script>
+    <script src="https://unpkg.com/cytoscape-klay/cytoscape-klay.js"></script>
+    <script src="https://unpkg.com/cytoscape-cola/cytoscape-cola.js"></script>
+    <!-- <script src="https://unpkg.com/cytoscape-euler/cytoscape-euler.js"></script> -->
+    <script src="https://unpkg.com/cytoscape-fcose/cytoscape-fcose.js"></script>
+    <script src="https://unpkg.com/cytoscape-cise/cytoscape-cise.js"></script>
+    <script src="https://unpkg.com/cytoscape-spread/cytoscape-spread.js"></script>
+
+    <script type="text/javascript">
+      var input = null;
+      var activeNode = null;
+
+      function changeHeaderColor(value) {
+        document.getElementById("header").style.backgroundColor = value;
+      }
+
+      function hashFromString(string) {
+        let hash = 0;
+        for (let i = 0; i < string.length; i++) {
+          let chr = string.charCodeAt(i);
+          hash = (hash << 5) - hash + chr;
+          hash |= 0; // Convert to 32bit integer
+        }
+        return hash;
+      }
+
+      function fileUpdated() {
+        changeHeaderColor();
+
+        console.log(input.files);
+        input.files[0]
+          .text()
+          .then((text) => JSON.parse(text))
+          .then(processJSON, (error) => changeHeaderColor("orange"))
+          .then(showGraph, (error) => changeHeaderColor("red"));
+      }
+
+      function processJSON(json) {
+        // Construct the edges.
+        let rawEdges = new Array();
+        let rawNodes = new Set();
+        for (const recipe of Object.values(json.recipes)) {
+          for (const product of Object.values(recipe.results)) {
+            for (const ingredient of Object.values(recipe.ingredients)) {
+              rawEdges.push({
+                source: ingredient.name,
+                target: product.name,
+              });
+              rawNodes.add(product.name);
+              rawNodes.add(ingredient.name);
+            }
+          }
+        }
+
+        // Nodes
+        let nodes = [];
+        for (const name of rawNodes) {
+          nodes.push({ data: { id: name } });
+        }
+
+        // Edges
+        const uniqueEdges = rawEdges.filter((thing, index) => {
+          const _thing = JSON.stringify(thing);
+          return (
+            index ===
+            rawEdges.findIndex((obj) => {
+              return JSON.stringify(obj) === _thing;
+            })
+          );
+        });
+
+        let edges = [];
+        for (const edge of uniqueEdges) {
+          edges.push({ data: edge });
+        }
+
+        // Convert them to a graph.
+        return {
+          nodes: nodes,
+          edges: edges,
+        };
+      }
+
+      function showGraph(graphData) {
+        console.log("Graph Data");
+        console.log(graphData);
+        let elements = {
+          nodes: graphData.nodes,
+          edges: graphData.edges,
+        };
+
+        let style = [
+          {
+            selector: "node",
+            style: {
+              "background-color": "#7FDBFF",
+              opacity: 0.7,
+              label: "data(id)",
+            },
+          },
+          {
+            selector: "node.highlighted",
+            style: {
+              opacity: 1,
+              "background-color": "#0074D9",
+            },
+          },
+          {
+            selector: "node.highlighted-outgoing",
+            style: {
+              opacity: 1,
+              "background-color": "#FF851B",
+            },
+          },
+          {
+            selector: "node.highlighted-incoming",
+            style: {
+              opacity: 1,
+              "background-color": "#3D9970",
+            },
+          },
+          {
+            selector: "edge",
+            style: {
+              "curve-style": "bezier",
+              "target-arrow-shape": "triangle",
+              opacity: 0.3,
+              "line-color": "#DDD",
+              "target-arrow-color": "#888",
+            },
+          },
+          {
+            selector: "edge.highlighted-outgoing",
+            style: {
+              opacity: 0.8,
+              "line-color": "#FF851B",
+              "target-arrow-color": "#FF851B",
+            },
+          },
+          {
+            selector: "edge.highlighted-incoming",
+            style: {
+              opacity: 0.8,
+              "line-color": "#3D9970",
+              "target-arrow-color": "#3D9970",
+            },
+          },
+        ];
+
+        // let layout = {
+        //   name: "breadthfirst",
+        //   directed: true,
+        //   maximal: true,
+        //   transform: function rotateAndScale(node, position) {
+        //     const rotate = -90;
+        //     const scaleX = 1.5;
+        //     const scaleY = 1;
+
+        //     let theta = (rotate * Math.PI) / 180;
+        //     let cosTheta = Math.cos(theta);
+        //     let sinTheta = Math.sin(theta);
+
+        //     return {
+        //       x: (position.x * cosTheta - position.y * sinTheta) * scaleX,
+        //       y: (position.x * sinTheta + position.y * cosTheta) * scaleY,
+        //     };
+        //   },
+        // };
+
+        let layout = {
+          name: "dagre",
+          nodeDimensionsIncludeLabels: true,
+          nodeSep: 10,
+          edgeSep: 10,
+          rankSep: 50,
+          rankDir: "LR",
+          ranker: "tight-tree",
+        };
+
+        // let layout = {
+        //   name: "elk",
+        //   fit: true,
+        //   ranker: "longest-path",
+        //   elk: {
+        //     algorithm: "layered",
+        //   },
+        // };
+
+        let cy = cytoscape({
+          container: document.getElementById("visualisation"),
+          elements: elements,
+          layout: layout,
+          style: style,
+        });
+
+        cy.on("mouseover", "node", function (e) {
+          var sel = e.target;
+          highlightNode(e.target);
+        });
+        cy.on("click", "node", function (e) {
+          if (e.target != activeNode) {
+            if (activeNode != null) {
+              unHighlightNode(activeNode);
+            }
+            activeNode = e.target;
+            highlightNode(e.target);
+          } else {
+            unHighlightNode(activeNode);
+            activeNode = null;
+          }
+        })
+        cy.on("mouseout", "node", function (e) {
+          if (e.target != activeNode) {
+            unHighlightNode(e.target);
+          }
+        });
+      }
+
+      function highlightNode(node) {
+          node.addClass("highlighted");
+          node.outgoers().addClass("highlighted-outgoing");
+          node.incomers().addClass("highlighted-incoming");
+      }
+      function unHighlightNode(node) {
+          node.removeClass("highlighted");
+          node.outgoers().removeClass("highlighted-outgoing");
+          node.incomers().removeClass("highlighted-incoming");
+      }
+
+      window.addEventListener("DOMContentLoaded", (event) => {
+        input = document.getElementById("file");
+        const len = document.getElementById("file").files.length;
+        if (len != 0) {
+          console.log("Showing file, that was already in input.");
+          fileUpdated();
+        } else {
+          document.getElementById("header").style.backgroundColor =
+            "red";
+        }
+      });
+    </script>
+    <style>
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+      }
+      .header {
+        display: flex;
+        text-align: center;
+        justify-content: center;
+        align-items: center;
+        flex-grow: 0;
+      }
+      .main {
+        display: flex;
+        flex-grow: 1;
+      }
+      #visualisation {
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="header" class="header">
+      <input id="file" type="file" name="file" onchange="fileUpdated()" />
+      <div class="instructions">
+        Hover to highlight neighbours. Click to make it persist.<br>
+
+        Incoming edges are green.
+        Outgoing edges are orange.
+      </div>
+    </div>
+    <div class="main">
+      <div id="visualisation"></div>
+    </div>
+  </body>
+</html>
